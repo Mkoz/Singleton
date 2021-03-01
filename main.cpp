@@ -1,6 +1,31 @@
 #include <iostream>
+#include <future>
+#include <chrono>
+#include <vector>
+#include "Singleton.h"
+constexpr auto _10Mill= 10000000;
+
+std::chrono::duration<double> getTime(){
+    auto begin= std::chrono::system_clock::now();
+    for ( size_t i= 0; i <= _10Mill; ++i){
+        Singleton::getInstance();
+    }
+    return std::chrono::system_clock::now() - begin;
+};
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    std::vector<std::future<std::chrono::duration<double>>> vec;
+    long long int number_of_execution = 1000;
+
+    for( long long int i = 0; i < number_of_execution; i++ ){
+        vec.push_back(std::async(std::launch::async,getTime));
+    }
+
+    std::chrono::duration<double> sum;
+    for(  long long int n = 0; n < number_of_execution; n++){
+        sum += vec[n].get();
+    }
+
+    std::cout << sum.count() << std::endl;
     return 0;
 }

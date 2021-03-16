@@ -2,20 +2,20 @@
 #include <future>
 #include <chrono>
 #include <vector>
-#include "Singleton.h"
+#include "MeyersSingleton/MeyersSingleton.h"
 constexpr auto _10Mill= 10000000;
 
 std::chrono::duration<double> getTime(){
     auto begin= std::chrono::system_clock::now();
     for ( size_t i= 0; i <= _10Mill; ++i){
-        Singleton::getInstance();
+        MeyersSingleton::getInstance();
     }
     return std::chrono::system_clock::now() - begin;
 };
 
 int main() {
     std::vector<std::future<std::chrono::duration<double>>> vec;
-    long long int number_of_execution = 1000;
+    long long int number_of_execution = 100000;
 
     for( long long int i = 0; i < number_of_execution; i++ ){
         vec.push_back(std::async(std::launch::async,getTime));
